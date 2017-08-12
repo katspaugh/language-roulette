@@ -1,0 +1,92 @@
+.container {
+  margin: 0 auto;
+  max-width: 900px;
+}
+
+.front section {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  align-items: center;
+}
+
+.front section.hilite {
+  background-color: #FFF844;
+  background-image: url('/images/casino.jpg');
+  background-size: cover;
+  background-position: top center;
+  color: #fff;
+}
+
+.front section.hilite h1 {
+  text-shadow: 0 0 30px #000;
+}
+
+.front section h1 {
+  text-align: center;
+  font-size: 50px;
+  font-weight: normal;
+}
+
+.front section h2 {
+  font-size: 30px;
+  font-weight: normal;
+  margin: 2em 0;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+}
+
+.front section h3 {
+  text-align: center;
+  font-size: 30px;
+  font-weight: normal;
+}
+
+.front section h2 span {
+  flex: 1;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.front section h2 select {
+  vertical-align: middle;
+  font-size: 1em;
+  margin-left: 0.5em;
+}
+
+.cta {
+  display: block;
+  text-align: center;
+  padding: 2em;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+}
+
+.cta a {
+  display: block;
+  color: #333;
+  border: 1px solid #FFF844;
+  border-radius: 4px;
+  background: #FFF844;
+  padding: 0.5em 1.5em;
+  cursor: pointer;
+  font-size: 32px;
+  margin: 0 1em 1em;
+  outline: none;
+  text-decoration: none;
+}
+
+.cta a:hover {
+  color: #000;
+  border-color: #999;
+  background: #fff333;
+  text-decoration: none;
+}
+
+.cta a:active {
+  background: #fff71e;
+}

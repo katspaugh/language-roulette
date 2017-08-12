@@ -1,0 +1,14 @@
+.container {
+  margin: 0 auto;
+  max-width: 900px;
+}
+
+.localMedia {
+  padding: 1em;
+  background: green;
+}
+
+.remoteMedia {
+  padding: 1em;
+  background: red;
+}
