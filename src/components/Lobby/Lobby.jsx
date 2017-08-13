@@ -14,10 +14,15 @@ export default class Lobby extends PureComponent {
 
     this.userData = null;
     this.pubSub = null;
+    this.advertising = false;
 
     this.state = {
       roomName: null
     };
+
+    this._onUnmount = () => null;
+    this._onDisconnect = () => null;
+    this._onUnload = () => this._onUnmount();
   }
 
   componentWillMount() {
@@ -26,46 +31,90 @@ export default class Lobby extends PureComponent {
     const lang = this.userData.student ? this.userData.targetLanguage : this.userData.nativeLanguage
     const ownRole = this.userData.student ? 'student' : 'teacher';
     const lookingFor = this.userData.student ? 'teacher' : 'student';
-    const ownRoomName = `${ ownRole }-${ lang }-${ Math.random().toString(32).slice(2) }`;
+    const ownRoomName = `${ ownRole }-${ Math.random().toString(32).slice(2) }`;
+    let currentRooms;
 
     this.pubSub = new PubSub();
 
     this.pubSub.connect()
       .then(client => {
-        client.on('connect', () => {
-          // Subscribe
-          client.subscribe(lang);
+        const announce = () => {
+          this.announced = true;
 
-          // Announce a new room
-          this.pubSub.publish(lang, ownRoomName);
-        });
+          client.update(lang, {
+            state: { desired: { rooms: currentRooms.concat([ ownRoomName ]) } }
+          });
+        };
 
-        // When a matching room is available
-        client.on('message', (topic, message) => {
+        // On change
+        const onChange = (topic, message, clientToken, stateObject) => {
           if (topic !== lang) return;
 
-          console.log(`Message received in topic "${ topic }": ${ message }`);
+          console.log('Current status of %s: %o', topic, stateObject, message);
 
-          const messageRoomName = String(message);
+          currentRooms = stateObject && stateObject.state ? stateObject.state.desired.rooms : [];
+          const othersRoomName = currentRooms[0] || '';
 
-          if (!this.state.roomName && messageRoomName.match(lookingFor)) {
-            this.setState({ roomName: messageRoomName });
-            this.pubSub.publish(lang, `${ messageRoomName }-joined`);
+          // Connected to a matching room
+          if (!this.state.roomName && othersRoomName.match(lookingFor)) {
+            this.setState({ roomName: othersRoomName });
+
+            // Remove the room from the list
+            client.update(lang, {
+              state: { desired: { rooms: currentRooms.filter(item => item !== othersRoomName) } }
+            });
+
             return;
           }
 
-          if (!this.state.roomName && messageRoomName === `${ ownRoomName }-joined`) {
-            this.setState({ roomName: ownRoomName });
-            return;
+          // Join or announce own room
+          if (!this.state.roomName && !currentRooms.includes(ownRoomName)) {
+            if (this.announced) {
+              this.setState({ roomName: ownRoomName });
+            } else {
+              announce();
+            }
           }
+        };
+
+        // On unmount
+        const onUnmount = () => {
+          if (currentRooms) {
+            client.update(lang, {
+              state: { desired: { rooms: currentRooms.filter(item => item !== ownRoomName) } }
+            });
+          }
+        };
+
+        // On room disconnect
+        const onDisconnect = () => {
+          this.setState({ roomName: null });
+          announce();
+        };
+
+        // Connect
+        client.on('connect', () => {
+          client.register(lang, () => {
+            console.log(`Registered, getting current status`);
+            // When a matching room is available
+            client.get(lang);
+
+            this._onUnmount = onUnmount;
+            this._onDisconnect = onDisconnect;
+          });
         });
+
+        // Listen to status
+        client.on('status', onChange);
+        client.on('foreignStateChange', onChange);
       });
+
+    window.addEventListener('beforeunload', this._onUnload);
   }
 
   componentWillUnmount() {
-    if (this.pubSub) {
-      this.pubSub.close();
-    }
+    this._onUnmount();
+    window.removeEventListener('beforeunload', this._onUnload);
   }
 
   /**
@@ -77,7 +126,7 @@ export default class Lobby extends PureComponent {
         <h1>Learning { this.userData.targetLanguage }</h1>
 
         <div className={ styles.videoChat }>
-          <VideoChat roomName={ this.state.roomName } />
+          <VideoChat roomName={ this.state.roomName } onDisconnect={ this._onDisconnect } />
         </div>
       </div>
     );

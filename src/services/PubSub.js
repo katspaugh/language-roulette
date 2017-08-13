@@ -9,7 +9,7 @@ let keys;
 export default class PubSub {
   connect() {
     return this.getKeys().then(keys => {
-      this.client = awsIot.device({
+      this.client = awsIot.thingShadow({
         region: keys.region,
         protocol: 'wss',
         accessKeyId: keys.accessKey,
@@ -36,11 +36,6 @@ export default class PubSub {
     }))
       .then(resp => resp.json())
       .then(res => keys = res);
-  }
-
-  publish(topic, message) {
-    console.log(`Message published in "${ topic }": ${ message }`);
-    this.client.publish(topic, message);
   }
 
   close() {

@@ -97,6 +97,8 @@ export default class VideoChat extends PureComponent {
     room.on('participantDisconnected', participant => {
       console.info(`Participant ${ participant.identity } left the room`);
       this.detachParticipantTracks(participant);
+
+      this.props.onDisconnect();
     });
 
     // Once the LocalParticipant leaves the room, detach the Tracks
@@ -115,6 +117,8 @@ export default class VideoChat extends PureComponent {
       this.activeRoom = null;
 
       this.setState({ hasPreview: false });
+
+      this.props.onDisconnect();
     });
   }
 
