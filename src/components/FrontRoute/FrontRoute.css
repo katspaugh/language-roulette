@@ -66,6 +66,12 @@
   align-items: center;
 }
 
+.cta i {
+  display: block;
+  margin: 0 0 32px;
+  padding: 16px 0;
+}
+
 .cta a {
   display: block;
   color: #333;

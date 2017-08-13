@@ -19,6 +19,11 @@ module.exports = {
     disableHostCheck: true
   },
 
+  node: {
+    fs: 'empty',
+    tls: 'empty'
+  },
+
   module: {
     rules: [
       {

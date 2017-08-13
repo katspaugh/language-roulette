@@ -10,6 +10,7 @@ export default class Nav extends React.PureComponent {
         <nav>
           <div className={ styles.logo }>
             <Link to="/">
+              Language Roulette
             </Link>
           </div>
 

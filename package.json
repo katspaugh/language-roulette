@@ -44,8 +44,10 @@
     "webpack-dev-server": "*"
   },
   "dependencies": {
+    "aws-iot-device-sdk": "^2.0.1",
     "classnames": "^2.2.5",
     "react-router-dom": "^4.1.1",
+    "rx": "^4.1.0",
     "twilio-video": "^1.2.0"
   }
 }

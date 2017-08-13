@@ -3,12 +3,25 @@
   max-width: 900px;
 }
 
+.medias {
+  position: relative;
+  max-width: 600px;
+}
+
 .localMedia {
+  transform: rotateY(180deg);
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 2;
+  width: 25%;
   padding: 1em;
-  background: green;
 }
 
 .remoteMedia {
   padding: 1em;
-  background: red;
+}
+
+.medias video {
+  width: 100%;
 }
