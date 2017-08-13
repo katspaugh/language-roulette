@@ -1,6 +1,5 @@
 import config from '../config';
 
-const localStorage = window.localStorage;
 const { videoApiUrl } = config;
 
 export default class VideoApi {
