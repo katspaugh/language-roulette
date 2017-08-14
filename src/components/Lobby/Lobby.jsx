@@ -34,6 +34,11 @@ export default class Lobby extends PureComponent {
 
     this.userData = User.getUserData();
 
+    if (window.location.hash) {
+      this.setState({ roomName: window.location.hash.slice(1) });
+      return;
+    }
+
     const lang = this.userData.student ? this.userData.targetLanguage : this.userData.nativeLanguage
     const ownRole = this.userData.student ? 'student' : 'teacher';
     const lookingFor = this.userData.student ? 'teacher' : 'student';
@@ -50,6 +55,8 @@ export default class Lobby extends PureComponent {
           client.update(lang, {
             state: { desired: { rooms: currentRooms.concat([ ownRoomName ]) } }
           });
+
+          window.location.hash = ownRoomName;
         };
 
         // On change
@@ -129,7 +136,12 @@ export default class Lobby extends PureComponent {
   render() {
     return (
       <div className={ styles.container }>
-        <h1>Learning { this.userData.targetLanguage }</h1>
+        <h1>
+          { this.userData.student ?
+            `Learning ${ this.userData.targetLanguage }` :
+            `Teaching ${ this.userData.nativeLanguage }`
+          }
+        </h1>
 
         <div className={ styles.videoChat }>
           <VideoChat roomName={ this.state.roomName } onDisconnect={ this._onDisconnect } />

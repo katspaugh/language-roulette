@@ -151,7 +151,11 @@ export default class VideoChat extends PureComponent {
 
   // Obtain a token from the server in order to connect to the Room.
   getToken() {
-    VideoApi.requestToken().then(data => {
+    if (this.token) {
+      return Promise.resolve();
+    }
+
+    return VideoApi.requestToken().then(data => {
       this.identity = data.identity;
       this.token = data.token;
     });
@@ -182,10 +186,10 @@ export default class VideoChat extends PureComponent {
   }
 
   componentWillMount() {
-    this.getToken();
-
     if (this.props.roomName) {
-      this.joinRoom(this.props.roomName);
+      this.getToken().then(() => {
+        this.props.roomName && this.joinRoom(this.props.roomName);
+      });
     }
 
     // When we are about to transition away from this page, disconnect
@@ -197,7 +201,7 @@ export default class VideoChat extends PureComponent {
   componentWillReceiveProps(props) {
     if (props.roomName !== this.props.roomName) {
       props.roomName ?
-        this.joinRoom(props.roomName) :
+        this.getToken().then(() => this.joinRoom(props.roomName)) :
         this.leaveRoomIfJoined();
     }
   }
