@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import User from '../../services/User';
 import PubSub from '../../services/PubSub';
+import VideoApi from '../../services/VideoApi';
 import VideoChat from '../VideoChat/VideoChat.jsx';
 import styles from './Lobby.css';
 
@@ -13,16 +14,57 @@ export default class Lobby extends PureComponent {
     super();
 
     this.userData = null;
+    this.lang = null;
+    this.ownRoomName = null;
+    this.isWaiting = true;
     this.pubSub = null;
-    this.advertising = false;
 
     this.state = {
       roomName: null
     };
 
-    this._onUnmount = () => null;
-    this._onDisconnect = () => null;
-    this._onUnload = () => this._onUnmount();
+    this._onDisconnect = () => this.onDisconnect();
+  }
+
+  isMatchingRoom(roomName) {
+    const desiredRoom = [
+      this.userData.student ? 'teacher' : 'student',
+      this.lang,
+      ''
+    ].join('-');
+    return roomName.indexOf(desiredRoom) === 0;
+  }
+
+  connectToRoom(roomName) {
+    this.isWaiting = false;
+    this.setState({ roomName });
+  }
+
+  createRoom() {
+    this.isWaiting = true;
+    this.setState({ roomName: this.ownRoomName });
+    this.pubSub.publish(this.ownRoomName);
+  }
+
+  findMatch() {
+    VideoApi.requestRooms().then(rooms => {
+      const match = this.isWaiting && rooms.find(room => this.isMatchingRoom(room.uniqueName));
+
+      match ?
+        this.connectToRoom(match.uniqueName) :
+        this.createRoom();
+    });
+  }
+
+  onMessage(message) {
+    if (this.isWaiting && this.isMatchingRoom(message)) {
+      this.connectToRoom(message);
+    }
+  }
+
+  onDisconnect() {
+    this.isWaiting = true;
+    this.findMatch();
   }
 
   componentWillMount() {
@@ -34,99 +76,32 @@ export default class Lobby extends PureComponent {
 
     this.userData = User.getUserData();
 
-    if (window.location.hash) {
-      this.setState({ roomName: window.location.hash.slice(1) });
-      return;
-    }
+    this.lang = this.userData.student ? this.userData.targetLanguage : this.userData.nativeLanguage;
 
-    const lang = this.userData.student ? this.userData.targetLanguage : this.userData.nativeLanguage
-    const ownRole = this.userData.student ? 'student' : 'teacher';
-    const lookingFor = this.userData.student ? 'teacher' : 'student';
-    const ownRoomName = `${ ownRole }-${ Math.random().toString(32).slice(2) }`;
-    let currentRooms;
+    this.ownRoomName = [
+      this.userData.student ? 'student' : 'teacher',
+      this.lang,
+      Math.random().toString(32).slice(2)
+    ].join('-');
 
-    this.pubSub = new PubSub();
+    this.pubSub = new PubSub(this.lang);
 
     this.pubSub.connect()
-      .then(client => {
-        const announce = () => {
-          this.announced = true;
+      .then(() => {
+        // Listen for matching rooms
+        this.pubSub.onMessage(message => this.onMessage(message));
 
-          client.update(lang, {
-            state: { desired: { rooms: currentRooms.concat([ ownRoomName ]) } }
-          });
-
-          window.location.hash = ownRoomName;
-        };
-
-        // On change
-        const onChange = (topic, message, clientToken, stateObject) => {
-          if (topic !== lang) return;
-
-          console.log('Current status of %s: %o', topic, stateObject, message);
-
-          currentRooms = stateObject && stateObject.state ? stateObject.state.desired.rooms : [];
-          const othersRoomName = currentRooms[0] || '';
-
-          // Connected to a matching room
-          if (!this.state.roomName && othersRoomName.match(lookingFor)) {
-            this.setState({ roomName: othersRoomName });
-
-            // Remove the room from the list
-            client.update(lang, {
-              state: { desired: { rooms: currentRooms.filter(item => item !== othersRoomName) } }
-            });
-
-            return;
-          }
-
-          // Join or announce own room
-          if (!this.state.roomName && !currentRooms.includes(ownRoomName)) {
-            if (this.announced) {
-              this.setState({ roomName: ownRoomName });
-            } else {
-              announce();
-            }
-          }
-        };
-
-        // On unmount
-        const onUnmount = () => {
-          if (currentRooms) {
-            client.update(lang, {
-              state: { desired: { rooms: currentRooms.filter(item => item !== ownRoomName) } }
-            });
-          }
-        };
-
-        // On room disconnect
-        const onDisconnect = () => {
-          this.setState({ roomName: null });
-          announce();
-        };
-
-        // Connect
-        client.on('connect', () => {
-          client.register(lang, () => {
-            console.log(`Registered, getting current status`);
-            // When a matching room is available
-            client.get(lang);
-
-            this._onUnmount = onUnmount;
-            this._onDisconnect = onDisconnect;
-          });
-        });
-
-        // Listen to status
-        client.on('status', onChange);
-        client.on('foreignStateChange', onChange);
+        // Find a match or announce our own room
+        this.findMatch();
       });
 
+    // Subscribe to unload
+    this._onUnload = () => this.pubSub.end();
     window.addEventListener('beforeunload', this._onUnload);
   }
 
   componentWillUnmount() {
-    this._onUnmount();
+    this._onUnload();
     window.removeEventListener('beforeunload', this._onUnload);
   }
 

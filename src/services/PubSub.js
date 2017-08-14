@@ -7,9 +7,24 @@ const { videoApiUrl } = config;
 let keys;
 
 export default class PubSub {
+  getKeys() {
+    if (keys) return Promise.resolve(keys);
+
+    return fetch(new Request(`${ videoApiUrl }/auth`, {
+      mode: 'cors',
+      method: 'GET'
+    }))
+      .then(resp => resp.json())
+      .then(res => keys = res);
+  }
+
+  constructor(topic) {
+    this.topic = topic;
+  }
+
   connect() {
     return this.getKeys().then(keys => {
-      this.client = awsIot.thingShadow({
+      this.client = awsIot.device({
         region: keys.region,
         protocol: 'wss',
         accessKeyId: keys.accessKey,
@@ -23,22 +38,29 @@ export default class PubSub {
         console.error(err);
       });
 
+      this.client.on('connect', () => {
+        this.client.subscribe(this.topic);
+      });
+
       return this.client;
     });
   }
 
-  getKeys() {
-    if (keys) return Promise.resolve(keys);
+  onMessage(callback) {
+    this.client.on('message', (topic, message) => {
+      console.log(`Received message in ${ topic }: "${ message }"`);
 
-    return fetch(new Request(`${ videoApiUrl }/auth`, {
-      mode: 'cors',
-      method: 'GET'
-    }))
-      .then(resp => resp.json())
-      .then(res => keys = res);
+      if (topic !== this.topic) return;
+
+      callback(String(message));
+    });
   }
 
-  close() {
-    this.client.end();
+  publish(message) {
+    this.client.publish(this.topic, message);
+  }
+
+  end() {
+    this.client && this.client.end();
   }
 };

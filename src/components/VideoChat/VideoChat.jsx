@@ -133,7 +133,7 @@ export default class VideoChat extends PureComponent {
     console.info(`Joining room ${ roomName }...`);
 
     const connectOptions = {
-      name: roomName,
+      name: roomName
       //logLevel: 'debug'
     };
 
@@ -200,9 +200,11 @@ export default class VideoChat extends PureComponent {
 
   componentWillReceiveProps(props) {
     if (props.roomName !== this.props.roomName) {
-      props.roomName ?
-        this.getToken().then(() => this.joinRoom(props.roomName)) :
-        this.leaveRoomIfJoined();
+      this.leaveRoomIfJoined();
+
+      if (props.roomName) {
+        this.getToken().then(() => this.joinRoom(props.roomName));
+      }
     }
   }
 
