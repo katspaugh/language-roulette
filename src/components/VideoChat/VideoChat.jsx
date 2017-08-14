@@ -182,12 +182,6 @@ export default class VideoChat extends PureComponent {
   }
 
   componentWillMount() {
-    // Check for WebRTC
-    if (navigator.getUserMedia && !navigator.webkitGetUserMedia && !navigator.mozGetUserMedia) {
-      alert('WebRTC is not available in your browser.');
-      return;
-    }
-
     this.getToken();
 
     if (this.props.roomName) {
