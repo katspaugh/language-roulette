@@ -1,5 +1,6 @@
 .container {
   margin: 0 auto;
+  padding: 0 1em;
   max-width: 900px;
 }
 
@@ -8,30 +9,69 @@
   flex-direction: row;
   align-content: center;
   align-items: center;
+  padding: 4vh 0;
 }
 
-.front section.hilite {
+.front section:nth-of-type(even) {
   background-color: #FFF844;
-  background-image: url('/images/casino.jpg');
-  background-size: cover;
-  background-position: top center;
-  color: #fff;
-}
-
-.front section.hilite h1 {
-  text-shadow: 0 0 30px #000;
 }
 
 .front section h1 {
   text-align: center;
-  font-size: 50px;
+  font-size: 48px;
   font-weight: normal;
+  padding: 0 1em;
+}
+
+.front section h1 span {
+  display: inline-block;
+  vertical-align: middle;
+  height: 1.5em;
+  width: 1.5em;
+  position: relative;
+  margin: 0.25em;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(1080deg); }
+}
+
+@keyframes spin2 {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(980deg); }
+}
+
+.spinningImage {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+  animation: spin 1.5s ease-out;
+}
+
+.front:hover .spinningImage {
+  animation: spin2 1.5s ease-out alternate;
+  animation-fill-mode: forwards;
+}
+
+.pointerImage {
+  position: absolute;
+  left: 50%;
+  top: -7%;
+  z-index: 2;
+  width: 20%;
+  height: 20%;
+  margin-left: -10%;
 }
 
 .front section h2 {
   font-size: 30px;
   font-weight: normal;
-  margin: 2em 0;
+  margin: 0;
   width: 100%;
   display: flex;
   flex-direction: row;
@@ -44,21 +84,19 @@
 }
 
 .front section h2 span {
-  flex: 1;
   white-space: nowrap;
-  text-align: right;
 }
 
 .front section h2 select {
   vertical-align: middle;
   font-size: 0.9em;
   margin-left: 0.5em;
+  min-width: 6em;
 }
 
 .cta {
   display: block;
   text-align: center;
-  padding: 2em;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -81,7 +119,7 @@
   padding: 0.5em 1.5em;
   cursor: pointer;
   font-size: 32px;
-  margin: 0 1em 1em;
+  margin: 0 30px 1em;
   outline: none;
   text-decoration: none;
 }
@@ -95,4 +133,23 @@
 
 .cta a:active {
   background: #fff71e;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: space-between;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+}
+
+.column {
+  flex: 1;
+  margin: 1em;
+}
+
+.column:not(:last-of-type) {
+  margin-right: 60px;
 }

@@ -9,13 +9,10 @@ export default class Nav extends React.PureComponent {
       <div className={ styles.container }>
         <nav>
           <div className={ styles.logo }>
-            <Link to="/">
-              Language Roulette
-            </Link>
+            <Link to="/">Language Roulette</Link>
           </div>
 
-          <div className={ styles.info }>
-          </div>
+          <div className={ styles.info } />
 
           <div className={ styles.login }>
             <Login />
