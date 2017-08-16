@@ -3,6 +3,7 @@ import User from '../../services/User';
 import PubSub from '../../services/PubSub';
 import VideoApi from '../../services/VideoApi';
 import VideoChat from '../VideoChat/VideoChat.jsx';
+import ImageTopic from '../ImageTopic/ImageTopic.jsx';
 import styles from './Lobby.css';
 
 
@@ -20,9 +21,11 @@ export default class Lobby extends PureComponent {
     this.pubSub = null;
 
     this.state = {
-      roomName: null
+      roomName: null,
+      connected: false
     };
 
+    this._onConnect = () => this.onConnect();
     this._onDisconnect = () => this.onDisconnect();
   }
 
@@ -65,6 +68,10 @@ export default class Lobby extends PureComponent {
   onDisconnect() {
     this.isWaiting = true;
     this.findMatch();
+  }
+
+  onConnect() {
+    this.setState({ connected: true });
   }
 
   componentWillMount() {
@@ -118,8 +125,21 @@ export default class Lobby extends PureComponent {
           }
         </h1>
 
-        <div className={ styles.videoChat }>
-          <VideoChat roomName={ this.state.roomName } onDisconnect={ this._onDisconnect } />
+        <div className={ styles.row }>
+          <div className={ styles.column70 }>
+            <div className={ styles.videoChat }>
+              <VideoChat
+                roomName={ this.state.roomName }
+                onConnect={ this._onConnect }
+                onDisconnect={ this._onDisconnect } />
+            </div>
+          </div>
+
+          <div className={ styles.column }>
+            { this.state.connected ? (
+              <ImageTopic roomName={ this.state.roomName } />
+            ) : '' }
+          </div>
         </div>
       </div>
     );

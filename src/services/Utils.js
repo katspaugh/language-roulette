@@ -14,11 +14,3 @@ export function shuffle(arr) {
 export function randomItem(arr) {
   return arr[rnd(arr.length)];
 }
-
-export function escapeRegexp(text) {
-  return text
-    .replace(/\]/g, '\\]')
-    .replace(/\^/g, '\\^')
-    .replace(/-/g, '\\-')
-    .replace(/./g, '[$&]')
-}

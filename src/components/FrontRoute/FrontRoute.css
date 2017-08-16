@@ -34,12 +34,12 @@
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
-  100% { transform: rotate(1080deg); }
+  100% { transform: rotate(720deg); }
 }
 
 @keyframes spin2 {
   0% { transform: rotate(0deg); }
-  100% { transform: rotate(980deg); }
+  100% { transform: rotate(540deg); }
 }
 
 .spinningImage {
@@ -50,11 +50,11 @@
   width: 100%;
   height: 100%;
   transform-origin: center center;
-  animation: spin 1.5s ease-out;
+  animation: spin 600ms ease-out;
 }
 
 .front:hover .spinningImage {
-  animation: spin2 1.5s ease-out alternate;
+  animation: spin2 300ms ease-out alternate;
   animation-fill-mode: forwards;
 }
 

@@ -1,27 +1,21 @@
 .container {
   margin: 0 auto;
-  max-width: 900px;
+  max-width: 1400px;
+  padding: 0 30px;
 }
 
-.medias {
-  position: relative;
-  max-width: 600px;
-}
-
-.localMedia {
-  transform: rotateY(180deg);
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: 2;
-  width: 25%;
-  padding: 1em;
-}
-
-.remoteMedia {
-  padding: 1em;
-}
-
-.medias video {
+.row {
+  display: flex;
+  flex-direction: row;
   width: 100%;
+  overflow: hidden;
+}
+
+.column {
+  flex: 1;
+}
+
+.column-70 {
+  width: 70%;
+  margin-right: 20px;
 }

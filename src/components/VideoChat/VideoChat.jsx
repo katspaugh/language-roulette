@@ -68,6 +68,8 @@ export default class VideoChat extends PureComponent {
       this.setState({ hasPreview: true });
     }
 
+    this.props.onConnect();
+
     // Attach the Tracks of the Room's Participants.
     room.participants.forEach(participant => {
       console.info(`Already in Room: ${ participant.identity }`);
@@ -78,6 +80,8 @@ export default class VideoChat extends PureComponent {
     // When a Participant joins the Room, log the event.
     room.on('participantConnected', participant => {
       console.info(`Joining: ${ participant.identity }`);
+
+      this.props.onConnect();
     });
 
     // When a Participant adds a Track, attach it to the DOM.

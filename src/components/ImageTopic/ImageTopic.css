@@ -1,0 +1,36 @@
+.container {
+  display: block;
+}
+
+.container button {
+  display: inline-block;
+  color: #333;
+  border: 1px solid #FFF844;
+  border-radius: 4px;
+  background: #FFF844;
+  padding: 0.5em 1.5em;
+  cursor: pointer;
+  font-size: 18px;
+  outline: none;
+  text-decoration: none;
+}
+
+.container button:hover {
+  color: #000;
+  border-color: #999;
+  background: #fff333;
+  text-decoration: none;
+}
+
+.container button:active {
+  background: #fff71e;
+}
+
+.container img {
+  max-width: 100%;
+}
+
+.controls {
+  text-align: center;
+  padding-top: 1em;
+}

@@ -48,16 +48,16 @@ export default class PubSub {
 
   onMessage(callback) {
     this.client.on('message', (topic, message) => {
-      console.log(`Received message in ${ topic }: "${ message }"`);
+      console.log(`Received message in ${ topic }: ${ message }`);
 
       if (topic !== this.topic) return;
 
-      callback(String(message));
+      callback(JSON.parse(message));
     });
   }
 
   publish(message) {
-    this.client.publish(this.topic, message);
+    this.client.publish(this.topic, JSON.stringify(message));
   }
 
   end() {
