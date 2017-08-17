@@ -17,8 +17,9 @@ export default class Lobby extends PureComponent {
     this.userData = null;
     this.lang = null;
     this.ownRoomName = null;
-    this.isWaiting = true;
     this.pubSub = null;
+    this.isWaiting = true;
+    this.isRoomCreated = false;
 
     this.state = {
       roomName: null,
@@ -40,18 +41,34 @@ export default class Lobby extends PureComponent {
 
   connectToRoom(roomName) {
     this.isWaiting = false;
+    this.pubSub.publish({ roomName, joined: true });
     this.setState({ roomName });
   }
 
   createRoom() {
     this.isWaiting = true;
-    this.setState({ roomName: this.ownRoomName });
-    this.pubSub.publish(this.ownRoomName);
+
+    const onCreate = () => {
+      this.isRoomCreated = true;
+      this.pubSub.publish({ roomName: this.ownRoomName, created: true });
+    };
+
+    if (this.isRoomCreated) {
+      onCreate();
+    } else {
+      VideoApi.createRoom(this.ownRoomName).then(onCreate);
+    }
   }
 
   findMatch() {
     VideoApi.requestRooms().then(rooms => {
       const match = this.isWaiting && rooms.find(room => this.isMatchingRoom(room.uniqueName));
+
+      // Check if a previously created room still exists
+      const ownRoomCreated = rooms.some(room => room.uniqueName === this.ownRoomName);
+      if (ownRoomCreated) {
+        this.isRoomCreated = true;
+      }
 
       match ?
         this.connectToRoom(match.uniqueName) :
@@ -60,13 +77,21 @@ export default class Lobby extends PureComponent {
   }
 
   onMessage(message) {
-    if (this.isWaiting && this.isMatchingRoom(message)) {
-      this.connectToRoom(message);
+    if (!this.isWaiting) return;
+
+    if (message.joined && message.roomName === this.ownRoomName) {
+      this.setState({ roomName: message.roomName });
+      return;
+    }
+
+    if (!message.joined && this.isMatchingRoom(message.roomName)) {
+      this.connectToRoom(message.roomName);
     }
   }
 
   onDisconnect() {
     this.isWaiting = true;
+    this.setState({ connected: false, roomName: null });
     this.findMatch();
   }
 
@@ -88,7 +113,7 @@ export default class Lobby extends PureComponent {
     this.ownRoomName = [
       this.userData.student ? 'student' : 'teacher',
       this.lang,
-      Math.random().toString(32).slice(2)
+      this.userData.id
     ].join('-');
 
     this.pubSub = new PubSub(this.lang);

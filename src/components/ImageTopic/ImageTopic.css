@@ -2,6 +2,10 @@
   display: block;
 }
 
+.container h1 {
+  margin-top: 0;
+}
+
 .container button {
   display: inline-block;
   color: #333;
@@ -27,7 +31,8 @@
 }
 
 .container img {
-  max-width: 100%;
+  display: block;
+  width: 100%;
 }
 
 .controls {

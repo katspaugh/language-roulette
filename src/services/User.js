@@ -33,10 +33,20 @@ export default class User {
     subject.onNext({ student: Boolean(toggle) });
   }
 
+  static saveId(id) {
+    localStorage.setItem('userId', id);
+    subject.onNext({ id });
+  }
+
+  static getId() {
+    return localStorage.getItem('userId');
+  }
+
   static getUserData() {
     return {
+      id: User.getId(),
       email: localStorage.getItem('email'),
-      expiresAt: localStorage.getItem('expiresAt'),
+      expiresAt: Number(localStorage.getItem('expiresAt')),
       nativeLanguage: localStorage.getItem('nativeLanguage'),
       targetLanguage: localStorage.getItem('targetLanguage'),
       student: Boolean(Number(localStorage.getItem('student')))
@@ -59,5 +69,7 @@ export default class User {
       .then(resp => resp.json());
   }
 }
+
+User.getId() || User.saveId(Math.random().toString(32).slice(2));
 
 User.subject = subject;

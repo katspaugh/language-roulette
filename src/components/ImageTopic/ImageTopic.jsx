@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 import NewsApi from '../../services/NewsApi';
 import { randomItem } from '../../services/Utils';
 import PubSub from '../../services/PubSub';
+import ProgressiveImage from '../ProgressiveImage/ProgressiveImage.jsx';
 import styles from './ImageTopic.css';
 
 
@@ -25,6 +26,7 @@ export default class ImageTopic extends PureComponent {
     this.setState({ randomTopic: topic });
 
     this.pubSub.publish({ imageTopic: {
+      url: topic.url,
       title: topic.title,
       multimedia: topic.multimedia
     } });
@@ -63,8 +65,11 @@ export default class ImageTopic extends PureComponent {
       <div className={ styles.container }>
         <h4>Describe the picture:</h4>
 
-        <a href={ randomTopic.multimedia[4].url } target="_blank">
-          <img src={ randomTopic.multimedia[3].url } title={ randomTopic.title } />
+        <a href={ randomTopic.url } target="_blank">
+          <ProgressiveImage
+            lowSrc={ randomTopic.multimedia[3].url }
+            fullSrc={ randomTopic.multimedia[4].url }
+            title={ randomTopic.title } />
         </a>
 
         <div className={ styles.controls }>
