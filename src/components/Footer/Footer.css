@@ -8,10 +8,21 @@
 }
 
 .container footer {
-  display: block;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   margin: auto;
   padding: 1em;
   font-size: 0.8em;
+}
+
+.container footer div:first-of-type {
+  flex: 1;
+  padding-right: 2em;
+}
+
+.container footer cite {
+  white-space: nowrap;
 }
 
 @media only screen and (min-width: 1024px) {

@@ -9,7 +9,7 @@ import styles from './Call.css';
 export default function Call({ match }) {
   return (
     <div className={ styles.container }>
-      <VideoChat roomName={ match.params.id } onDisconnect={ () => null } />
+      <VideoChat roomName={ match.params.id } onDisconnect={ () => null } onConnect={ () => null } />
     </div>
   );
 }

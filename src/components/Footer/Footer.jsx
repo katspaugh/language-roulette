@@ -7,7 +7,13 @@ export default class Footer extends React.PureComponent {
     return (
       <div className={ styles.container }>
         <footer>
-          Language Roulette, 2017
+          <div>
+            Language is a virus from outer space <cite>― William S. Burroughs</cite>
+          </div>
+
+          <div>
+            Language Roulette, 2017
+          </div>
         </footer>
       </div>
     );
