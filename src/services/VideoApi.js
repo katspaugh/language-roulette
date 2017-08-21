@@ -19,11 +19,15 @@ export default class VideoApi {
       .then(resp => resp.json());
   }
 
-  static createRoom(uniqueName) {
+  static createRoom(uniqueName, maxParticipants = 2) {
     return fetch(new Request(`${ videoApiUrl }/rooms`, {
       mode: 'cors',
       method: 'POST',
-      body: JSON.stringify({ uniqueName })
+      body: JSON.stringify({
+        uniqueName,
+        maxParticipants,
+        enableTurn: true
+      })
     }))
       .then(resp => resp.json());
   }
