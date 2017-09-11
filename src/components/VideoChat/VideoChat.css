@@ -1,34 +1,48 @@
 .container {
-}
-
-.videos {
-  display: flex;
   position: relative;
+  min-height: 100px;
 }
 
-.videos video {
+.container video {
   display: block;
   width: 100%;
 }
 
 .localMedia {
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: 2;
-  width: 25%;
-  padding-bottom: 30px;
+  margin-top: 30px;
 }
 
 .localMedia video {
   transform: rotateY(180deg);
 }
 
-.remoteMedia {
-  position: static;
-}
-
 .controls {
   position: absolute;
-  bottom: 0;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+
+.controls button {
+  display: inline-block;
+  color: #333;
+  border: 1px solid #FFF844;
+  border-radius: 4px;
+  background: #FFF844;
+  padding: 0.5em 1.5em;
+  cursor: pointer;
+  font-size: 18px;
+  outline: none;
+  text-decoration: none;
+}
+
+.controls button:hover {
+  color: #000;
+  border-color: #999;
+  background: #fff333;
+  text-decoration: none;
+}
+
+.controls button:active {
+  background: #fff71e;
 }

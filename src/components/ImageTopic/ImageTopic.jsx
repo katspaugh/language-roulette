@@ -16,65 +16,55 @@ export default class ImageTopic extends PureComponent {
     this.newsTopics = [];
 
     this.state = {
-      randomTopic: null
+      topic: null
     };
   }
 
   setTopic() {
     const topic = randomItem(this.newsTopics);
 
-    this.setState({ randomTopic: topic });
+    this.setState({ topic });
 
-    this.pubSub.publish({ imageTopic: {
-      url: topic.url,
-      title: topic.title,
-      multimedia: topic.multimedia
-    } });
+    this.props.onChange(topic);
   }
 
   componentWillMount() {
-    this.pubSub = new PubSub(this.props.roomName);
+    if (this.props.topic) {
+      this.setState({ topic: this.props.topic });
+    }
 
-    this.pubSub.connect().then(() => {
-      this.pubSub.onMessage(message => {
-        if (message.imageTopic) {
-          this.setState({ randomTopic: message.imageTopic });
-        }
-      });
-
-      NewsApi.getRandomStories().then(data => {
-        this.newsTopics = data;
-        if (!this.state.randomTopic) this.setTopic();
-      });
+    NewsApi.getRandomStories().then(data => {
+      this.newsTopics = data;
+      if (!this.state.topic) this.setTopic();
     });
   }
 
-  componentWillUnmount() {
-    this.pubSub.end();
+  componentWillReceiveProps(props) {
+    if (props.topic) {
+      this.setState({ topic: props.topic });
+    }
   }
 
   /**
    * @return {JSX.Element}
    */
   render() {
-    const { randomTopic } = this.state;
+    const { topic } = this.state;
 
-    if (!randomTopic) return null;
+    if (!topic) return null;
 
     return (
       <div className={ styles.container }>
-        <h4>Describe the picture:</h4>
-
-        <a href={ randomTopic.url } target="_blank">
+        <a href={ topic.url } target="_blank">
           <ProgressiveImage
-            lowSrc={ randomTopic.multimedia[3].url }
-            fullSrc={ randomTopic.multimedia[4].url }
-            title={ randomTopic.title } />
+            lowSrc={ topic.multimedia[3].url }
+            fullSrc={ topic.multimedia[4].url }
+            title={ topic.title } />
         </a>
 
         <div className={ styles.controls }>
           <button onClick={ () => this.setTopic() }>
-            ↻ Another picure
+            ↻ Another picture
           </button>
         </div>
       </div>

@@ -227,16 +227,14 @@ export default class VideoChat extends PureComponent {
   render() {
     return (
       <div className={ styles.container }>
-        <div className={ styles.videos }>
-          <div className={ styles.localMedia } ref={ this._getLocalMedia }>
-            { this.state.hasPreview ? null : (
-              <div className={ styles.controls }>
-                <button onClick={ this._onPreviewClick }>Preview my video</button>
-              </div>
-            ) }
-          </div>
+        <div className={ styles.remoteMedia } ref={ this._getRemoteMedia } />
 
-          <div className={ styles.remoteMedia } ref={ this._getRemoteMedia } />
+        <div className={ styles.localMedia } ref={ this._getLocalMedia }>
+          { this.state.hasPreview ? null : (
+            <div className={ styles.controls }>
+              <button onClick={ this._onPreviewClick }>Preview my video</button>
+            </div>
+          ) }
         </div>
       </div>
     );

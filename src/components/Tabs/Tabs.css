@@ -1,0 +1,49 @@
+.container {
+  min-width: 640px;
+}
+
+.tabs {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+}
+
+.tabs h4 {
+  margin: 0 2em;
+}
+
+.tab {
+  border: 1px solid #eee;
+  border-bottom-color: #fff;
+  background: #eee;
+  margin-bottom: -1px;
+  padding: 0.5em 1em;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #fff;
+  cursor: default;
+  pointer-events: none;
+}
+
+.tab:not(:first-of-type) {
+  margin-left: -1px;
+}
+
+.content {
+  background: #fff;
+  padding: 1em;
+  max-width: 640px;
+}
+
+.tabContent {
+  display: none;
+}
+
+.tabContent.active {
+  display: block;
+}

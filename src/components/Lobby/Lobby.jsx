@@ -3,7 +3,8 @@ import User from '../../services/User';
 import PubSub from '../../services/PubSub';
 import VideoApi from '../../services/VideoApi';
 import VideoChat from '../VideoChat/VideoChat.jsx';
-import ImageTopic from '../ImageTopic/ImageTopic.jsx';
+import Topics from '../Topics/Topics.jsx';
+import config from '../../config';
 import styles from './Lobby.css';
 
 
@@ -145,25 +146,23 @@ export default class Lobby extends PureComponent {
       <div className={ styles.container }>
         <h1>
           { this.userData.student ?
-            `Learning ${ this.userData.targetLanguage }` :
-            `Teaching ${ this.userData.nativeLanguage }`
+            `Learning ${ config.languages[this.userData.targetLanguage] }` :
+            `Teaching ${ config.languages[this.userData.nativeLanguage] }`
           }
         </h1>
 
         <div className={ styles.row }>
           <div className={ styles.column70 }>
+            <Topics lang={ this.lang } roomName={ this.state.roomName } />
+          </div>
+
+          <div className={ styles.column }>
             <div className={ styles.videoChat }>
               <VideoChat
                 roomName={ this.state.roomName }
                 onConnect={ this._onConnect }
                 onDisconnect={ this._onDisconnect } />
             </div>
-          </div>
-
-          <div className={ styles.column }>
-            { this.state.connected ? (
-              <ImageTopic roomName={ this.state.roomName } />
-            ) : '' }
           </div>
         </div>
       </div>

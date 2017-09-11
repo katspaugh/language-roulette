@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 import User from '../../services/User';
 import config from '../../config';
+import YoutubeList from '../YoutubeList/YoutubeList.jsx';
 import styles from './FrontRoute.css';
 
 /**
@@ -31,9 +32,10 @@ export default ({ match }) => {
             <h2>
               <span>I'm learning</span>
 
-              <select onChange={ e => User.saveTargetLanguage(e.target.value) } defaultValue={ userData.targetLanguage }>
-                { config.languages.map(lang => (
-                  <option key={ lang }>{ lang }</option>
+              <select defaultValue={ userData.targetLanguage || config.defaultLang }
+                      onChange={ e => User.saveTargetLanguage(e.target.value) }>
+                { Object.keys(config.languages).map(lang => (
+                  <option key={ lang } value={ lang }>{ config.languages[lang] }</option>
                 )) }
               </select>
             </h2>
@@ -43,9 +45,10 @@ export default ({ match }) => {
             <h2>
               <span>I speak</span>
 
-              <select onChange={ e => User.saveNativeLanguage(e.target.value) } defaultValue={ userData.nativeLanguage }>
-                { config.languages.map(lang => (
-                  <option key={ lang }>{ lang }</option>
+              <select defaultValue={ userData.nativeLanguage || config.defaultLang }
+                      onChange={ e => User.saveNativeLanguage(e.target.value) }>
+                { Object.keys(config.languages).map(lang => (
+                  <option key={ lang } value={ lang }>{ config.languages[lang] }</option>
                 )) }
               </select>
             </h2>
