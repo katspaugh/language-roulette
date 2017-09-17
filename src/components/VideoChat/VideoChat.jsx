@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import Video from 'twilio-video';
-import VideoApi from '../../services/VideoApi';
+import VideoCallApi from '../../services/VideoCallApi';
 import styles from './VideoChat.css';
 
 /**
@@ -88,13 +88,13 @@ export default class VideoChat extends PureComponent {
     room.on('trackAdded', (track, participant) => {
       console.info(`${ participant.identity } added track: ${ track.kind }`);
       const previewContainer = this.refs.remoteMedia;
-      this.attachTracks([track], previewContainer);
+      this.attachTracks([ track ], previewContainer);
     });
 
     // When a Participant removes a Track, detach it from the DOM.
     room.on('trackRemoved', (track, participant) => {
       console.info(`${ participant.identity } removed track: ${ track.kind }`);
-      this.detachTracks([track]);
+      this.detachTracks([ track ]);
     });
 
     // When a Participant leaves the Room, detach its Tracks.
@@ -159,7 +159,7 @@ export default class VideoChat extends PureComponent {
       return Promise.resolve();
     }
 
-    return VideoApi.requestToken().then(data => {
+    return VideoCallApi.requestToken().then(data => {
       this.identity = data.identity;
       this.token = data.token;
     });

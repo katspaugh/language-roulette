@@ -22,15 +22,35 @@ export default class ImageTopic extends PureComponent {
 
   setTopic() {
     const topic = randomItem(this.newsTopics);
-
     this.setState({ topic });
+    this.publish(topic);
+  }
 
-    this.props.onChange(topic);
+  publish(topic) {
+    this.pubSub && this.pubSub.publish({
+      url: topic.url,
+      title: topic.title,
+      multimedia: topic.multimedia
+    });
+  }
+
+  init(roomName) {
+    this.pubSub = new PubSub(`${ roomName }-image }`);
+
+    this.pubSub.connect().then(() => {
+      this.pubSub.onMessage(message => {
+        this.setState({ topic: message });
+      });
+
+      if (this.state.topic) {
+        this.publish(this.state.topic);
+      }
+    });
   }
 
   componentWillMount() {
-    if (this.props.topic) {
-      this.setState({ topic: this.props.topic });
+    if (this.props.roomName) {
+      this.init(this.props.roomName);
     }
 
     NewsApi.getRandomStories().then(data => {
@@ -40,9 +60,13 @@ export default class ImageTopic extends PureComponent {
   }
 
   componentWillReceiveProps(props) {
-    if (props.topic) {
-      this.setState({ topic: props.topic });
+    if (props.roomName && !this.pubSub) {
+      this.init(props.roomName);
     }
+  }
+
+  componentWillUnmount() {
+    this.pubSub.end();
   }
 
   /**

@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import User from '../../services/User';
 import PubSub from '../../services/PubSub';
-import VideoApi from '../../services/VideoApi';
+import VideoCallApi from '../../services/VideoCallApi';
 import VideoChat from '../VideoChat/VideoChat.jsx';
 import Topics from '../Topics/Topics.jsx';
 import config from '../../config';
@@ -40,10 +40,14 @@ export default class Lobby extends PureComponent {
     return roomName.indexOf(desiredRoom) === 0;
   }
 
+  setRoom(roomName) {
+    this.setState({ roomName });
+  }
+
   connectToRoom(roomName) {
     this.isWaiting = false;
     this.pubSub.publish({ roomName, joined: true });
-    this.setState({ roomName });
+    this.setRoom(roomName);
   }
 
   createRoom() {
@@ -57,12 +61,12 @@ export default class Lobby extends PureComponent {
     if (this.isRoomCreated) {
       onCreate();
     } else {
-      VideoApi.createRoom(this.ownRoomName).then(onCreate);
+      VideoCallApi.createRoom(this.ownRoomName).then(onCreate);
     }
   }
 
   findMatch() {
-    VideoApi.requestRooms().then(rooms => {
+    VideoCallApi.requestRooms().then(rooms => {
       const match = this.isWaiting && rooms.find(room => this.isMatchingRoom(room.uniqueName));
 
       // Check if a previously created room still exists
@@ -81,7 +85,7 @@ export default class Lobby extends PureComponent {
     if (!this.isWaiting) return;
 
     if (message.joined && message.roomName === this.ownRoomName) {
-      this.setState({ roomName: message.roomName });
+      this.setRoom(message.roomName);
       return;
     }
 

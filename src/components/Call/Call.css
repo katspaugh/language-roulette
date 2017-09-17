@@ -1,4 +1,30 @@
 .container {
-  margin: 2em auto;
-  max-width: 900px;
+  margin: 40px auto 0;
+  max-width: 1400px;
+  padding: 0 30px;
+}
+
+@media only screen and (min-width: 1024px) {
+  .container h1 {
+    width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap-reverse;
+  width: 100%;
+  overflow: hidden;
+}
+
+.column {
+  flex: 1;
+}
+
+.column-70 {
+  min-width: 70%;
+  margin-right: 20px;
 }

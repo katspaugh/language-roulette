@@ -2,7 +2,7 @@
 
 import awsIot from 'aws-iot-device-sdk';
 import config from '../config';
-const { videoApiUrl } = config;
+const { authApiUrl } = config;
 
 let keys;
 
@@ -10,7 +10,7 @@ export default class PubSub {
   getKeys() {
     if (keys) return Promise.resolve(keys);
 
-    return fetch(new Request(`${ videoApiUrl }/auth`, {
+    return fetch(new Request(`${ authApiUrl }/auth`, {
       mode: 'cors',
       method: 'GET'
     }))
@@ -23,6 +23,8 @@ export default class PubSub {
   }
 
   connect() {
+    window.addEventListener('unload', () => this.end);
+
     return this.getKeys().then(keys => {
       this.client = awsIot.device({
         region: keys.region,
@@ -57,7 +59,7 @@ export default class PubSub {
   }
 
   publish(message) {
-    this.client.publish(this.topic, JSON.stringify(message));
+    this.client && this.client.publish(this.topic, JSON.stringify(message));
   }
 
   end() {
