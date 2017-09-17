@@ -32,6 +32,7 @@ export default class YoutubeVideo extends PureComponent {
 
   setVideoId(videoId) {
     this.setState({ videoId, loading: false });
+    this.publish({ videoId });
   }
 
   publish(message) {
@@ -106,7 +107,7 @@ export default class YoutubeVideo extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.pubSub.end();
+    this.pubSub && this.pubSub.end();
   }
 
   /**

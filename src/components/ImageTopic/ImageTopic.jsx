@@ -2,7 +2,6 @@ import React, { PureComponent } from 'react';
 import NewsApi from '../../services/NewsApi';
 import { randomItem } from '../../services/Utils';
 import PubSub from '../../services/PubSub';
-import ProgressiveImage from '../ProgressiveImage/ProgressiveImage.jsx';
 import styles from './ImageTopic.css';
 
 
@@ -21,17 +20,19 @@ export default class ImageTopic extends PureComponent {
   }
 
   setTopic() {
-    const topic = randomItem(this.newsTopics);
+    const random = randomItem(this.newsTopics);
+    const topic = {
+      title: random.title,
+      url: random.url,
+      imageUrl: random.multimedia[4].url.replace(/superJumbo/, 'articleLarge')
+    };
+
     this.setState({ topic });
     this.publish(topic);
   }
 
   publish(topic) {
-    this.pubSub && this.pubSub.publish({
-      url: topic.url,
-      title: topic.title,
-      multimedia: topic.multimedia
-    });
+    this.pubSub && this.pubSub.publish(topic);
   }
 
   init(roomName) {
@@ -54,7 +55,7 @@ export default class ImageTopic extends PureComponent {
     }
 
     NewsApi.getRandomStories().then(data => {
-      this.newsTopics = data;
+      this.newsTopics = data.filter(({ multimedia }) => multimedia[4].height < multimedia[4].width);
       if (!this.state.topic) this.setTopic();
     });
   }
@@ -66,7 +67,7 @@ export default class ImageTopic extends PureComponent {
   }
 
   componentWillUnmount() {
-    this.pubSub.end();
+    this.pubSub && this.pubSub.end();
   }
 
   /**
@@ -80,10 +81,7 @@ export default class ImageTopic extends PureComponent {
     return (
       <div className={ styles.container }>
         <a href={ topic.url } target="_blank">
-          <ProgressiveImage
-            lowSrc={ topic.multimedia[3].url }
-            fullSrc={ topic.multimedia[4].url }
-            title={ topic.title } />
+          <img src={ topic.imageUrl } title={ topic.title } />
         </a>
 
         <div className={ styles.controls }>

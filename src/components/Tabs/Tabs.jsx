@@ -41,11 +41,7 @@ export default class Tabs extends PureComponent {
         </div>
 
         <div className={ styles.content }>
-          { tabNames.map((name, index) => (
-            <div className={ classnames(styles.tabContent, { [styles.active]: index === activeTab }) }>
-              { data[name] }
-            </div>
-          )) }
+          { data[tabNames[activeTab]] }
         </div>
       </div>
     );

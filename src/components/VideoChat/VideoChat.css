@@ -1,5 +1,4 @@
 .container {
-  position: relative;
   min-height: 100px;
 }
 
@@ -8,22 +7,32 @@
   width: 100%;
 }
 
+.localMedia,
+.remoteMedia {
+  position: relative;
+  background: #ddd;
+  min-height: 200px;
+  min-width: 200px;
+  color: #bbb;
+}
+
 .localMedia {
-  margin-top: 30px;
+  margin: 30px 0;
 }
 
 .localMedia video {
   transform: rotateY(180deg);
 }
 
-.controls {
+.center {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1;
 }
 
-.controls button {
+.button {
   display: inline-block;
   color: #333;
   border: 1px solid #FFF844;
@@ -36,13 +45,13 @@
   text-decoration: none;
 }
 
-.controls button:hover {
+.button:hover {
   color: #000;
   border-color: #999;
   background: #fff333;
   text-decoration: none;
 }
 
-.controls button:active {
+.button:active {
   background: #fff71e;
 }

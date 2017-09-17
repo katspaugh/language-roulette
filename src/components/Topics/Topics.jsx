@@ -15,8 +15,8 @@ export default class Topics extends PureComponent {
     return (
       <Tabs title="Conversation topics">
         { {
-          'Watch Video': <YoutubeVideo lang={ this.props.lang } roomName={ this.props.roomName } />,
-          'Describe Picture': <ImageTopic roomName={ this.props.roomName } />
+          'Picture': <ImageTopic roomName={ this.props.roomName } />,
+          'Video': <YoutubeVideo lang={ this.props.lang } roomName={ this.props.roomName } />
         } }
       </Tabs>
     );

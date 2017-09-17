@@ -12,6 +12,17 @@ import styles from './FrontRoute.css';
 export default ({ match }) => {
   const userData = User.getUserData();
 
+  const otherLanguages = Object.keys(config.languages)
+    .filter(key => !(key in config.popularLanguages));
+
+  const langOptions = Object.keys(config.popularLanguages).map(lang => (
+    <option key={ lang } value={ lang }>{ config.languages[lang] }</option>
+  )).concat([ (
+    <option disabled>───────</option>
+  ) ]).concat(otherLanguages.map(lang => (
+    <option key={ lang } value={ lang }>{ config.languages[lang] }</option>
+  )));
+
   return (
     <div className={ styles.front }>
       <section className={ styles.hilite }>
@@ -34,9 +45,7 @@ export default ({ match }) => {
 
               <select defaultValue={ userData.targetLanguage || config.defaultLang }
                       onChange={ e => User.saveTargetLanguage(e.target.value) }>
-                { Object.keys(config.languages).map(lang => (
-                  <option key={ lang } value={ lang }>{ config.languages[lang] }</option>
-                )) }
+                { langOptions }
               </select>
             </h2>
           </div>
@@ -47,9 +56,7 @@ export default ({ match }) => {
 
               <select defaultValue={ userData.nativeLanguage || config.defaultLang }
                       onChange={ e => User.saveNativeLanguage(e.target.value) }>
-                { Object.keys(config.languages).map(lang => (
-                  <option key={ lang } value={ lang }>{ config.languages[lang] }</option>
-                )) }
+                { langOptions }
               </select>
             </h2>
           </div>

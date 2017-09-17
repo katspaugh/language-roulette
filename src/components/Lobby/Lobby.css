@@ -4,12 +4,9 @@
   padding: 0 30px;
 }
 
-@media only screen and (min-width: 1024px) {
-  .container h1 {
-    width: 900px;
-    margin-left: auto;
-    margin-right: auto;
-  }
+.container h1 {
+  margin: 50px auto;
+  padding: 0 20px;
 }
 
 .row {
