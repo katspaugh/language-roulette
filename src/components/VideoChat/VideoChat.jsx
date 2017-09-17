@@ -1,6 +1,7 @@
 import React, { PureComponent } from 'react';
 import Video from 'twilio-video';
 import VideoCallApi from '../../services/VideoCallApi';
+import Emojis from '../Emojis/Emojis.jsx';
 import styles from './VideoChat.css';
 
 /**
@@ -231,13 +232,15 @@ export default class VideoChat extends PureComponent {
           <div className={ styles.center }><span>Waiting for a partner...</span></div>
         </div>
 
-        <div className={ styles.localMedia } ref={ this._getLocalMedia }>
-          { this.state.hasPreview ? null : (
-            <div className={ styles.center }>
-              <button className={ styles.button } onClick={ this._onPreviewClick }>Preview my video</button>
-            </div>
-          ) }
-        </div>
+        <Emojis roomName={ this.props.roomName }>
+          <div className={ styles.localMedia } ref={ this._getLocalMedia }>
+            { this.state.hasPreview ? null : (
+              <div className={ styles.center }>
+                <button className={ styles.button } onClick={ this._onPreviewClick }>Preview my video</button>
+              </div>
+            ) }
+          </div>
+        </Emojis>
       </div>
     );
   }

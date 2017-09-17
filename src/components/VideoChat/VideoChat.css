@@ -16,6 +16,12 @@
   color: #bbb;
 }
 
+.localMedia video,
+.remoteMedia video {
+  position: relative;
+  z-index: 2;
+}
+
 .localMedia {
   margin: 30px 0;
 }

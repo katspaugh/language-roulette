@@ -4,6 +4,7 @@ import PubSub from '../../services/PubSub';
 import VideoCallApi from '../../services/VideoCallApi';
 import VideoChat from '../VideoChat/VideoChat.jsx';
 import Topics from '../Topics/Topics.jsx';
+import Timer from '../Timer/Timer.jsx';
 import config from '../../config';
 import styles from './Lobby.css';
 
@@ -153,6 +154,8 @@ export default class Lobby extends PureComponent {
             `Learning ${ config.languages[this.userData.targetLanguage] }` :
             `Teaching ${ config.languages[this.userData.nativeLanguage] }`
           }
+
+          <Timer />
         </h1>
 
         <div className={ styles.row }>

@@ -1,0 +1,54 @@
+.container {
+  position: relative;
+}
+
+.content {
+  position: relative;
+}
+
+@keyframes yay {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.1);
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(10);
+  }
+}
+
+.emoji {
+  opacity: 0;
+  font-size: 50px;
+  position: absolute;
+  z-index: 10;
+  left: 50%;
+  top: 50%;
+  transform-origin: center center;
+  transform: translate(-50%, -50%) scale(0.1);
+  animation: yay 3s linear;
+}
+
+.buttons {
+  text-align: center;
+  position: absolute;
+  z-index: 3;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.buttons button,
+.buttons button:hover,
+.buttons button:active {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0.5em 1em;
+  cursor: pointer;
+  font-size: 18px;
+  outline: none;
+}
