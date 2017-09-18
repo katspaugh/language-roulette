@@ -68,6 +68,10 @@ export default class YoutubeVideo extends PureComponent {
   }
 
   onLoad() {
+    const YT = window.YT;
+    const States = YT.PlayerState;
+    let prevState = null;
+
     const player = new YT.Player(this.clientId, {
       events: {
         onReady: () => {
@@ -76,7 +80,7 @@ export default class YoutubeVideo extends PureComponent {
 
         onStateChange: (event) => {
           this.playing = null;
-          if (event.data === YT.PlayerState.PLAYING) {
+          if (event.data === States.PLAYING || (prevState === States.UNSTARTED && event.data === States.BUFFERING)) {
             this.playing = true;
           } else if (event.data === YT.PlayerState.PAUSED) {
             this.playing = false;
@@ -87,6 +91,8 @@ export default class YoutubeVideo extends PureComponent {
             currentTime: player.getCurrentTime(),
             playing: this.playing
           });
+
+          prevState = event.data;
         }
       }
     });
