@@ -18,19 +18,19 @@ export default class User {
     subject.onNext({ expiresAt: value });
   }
 
-  static saveNativeLanguage(value) {
-    localStorage.setItem('nativeLanguage', value);
-    subject.onNext({ nativeLanguage: value });
+  static saveLanguage(value) {
+    localStorage.setItem('language', value);
+    subject.onNext({ language: value });
   }
 
-  static saveTargetLanguage(value) {
-    localStorage.setItem('targetLanguage', value);
-    subject.onNext({ targetLanguage: value });
+  static saveLevel(value) {
+    localStorage.setItem('level', value);
+    subject.onNext({ level: value });
   }
 
-  static saveStudent(toggle) {
-    localStorage.setItem('student', toggle ? '1' : '');
-    subject.onNext({ student: Boolean(toggle) });
+  static saveTeacher(isTeacher) {
+    localStorage.setItem('teacher', isTeacher ? '1' : '');
+    subject.onNext({ teacher: Boolean(isTeacher) });
   }
 
   static saveId(id) {
@@ -47,9 +47,9 @@ export default class User {
       id: User.getId(),
       email: localStorage.getItem('email'),
       expiresAt: Number(localStorage.getItem('expiresAt')),
-      nativeLanguage: localStorage.getItem('nativeLanguage'),
-      targetLanguage: localStorage.getItem('targetLanguage'),
-      student: Boolean(Number(localStorage.getItem('student')))
+      language: localStorage.getItem('language') || config.defaultLang,
+      level: localStorage.getItem('level'),
+      teacher: Boolean(Number(localStorage.getItem('teacher')))
     }
   }
 

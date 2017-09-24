@@ -3,6 +3,15 @@ export default {
   videoApiUrl: 'https://tqr3q3fgxe.execute-api.eu-west-1.amazonaws.com/dev',
   authApiUrl: 'https://tqr3q3fgxe.execute-api.eu-west-1.amazonaws.com/dev',
 
+  levels: [
+    { level: 'A1', title: 'A1: Beginner' },
+    { level: 'A2', title: 'A2: Elementary' },
+    { level: 'B1', title: 'B1: Intermediate' },
+    { level: 'B2', title: 'B2: Upper Intermediate' },
+    { level: 'C1', title: 'C1: Advanced' },
+    { level: 'Native', title: 'Native speaker' }
+  ],
+
   defaultLang: 'en',
 
   popularLanguages: {

@@ -23,6 +23,10 @@ export default ({ match }) => {
     <option key={ lang } value={ lang }>{ config.languages[lang] }</option>
   )));
 
+  const levelOptions = config.levels.map(item => (
+    <option key={ item.level } value={ item.level }>{ item.title }</option>
+  ));
+
   return (
     <div className={ styles.front }>
       <section className={ styles.hilite }>
@@ -41,10 +45,10 @@ export default ({ match }) => {
         <div className={ classnames(styles.container, styles.row) }>
           <div className={ styles.column }>
             <h2>
-              <span>I'm learning</span>
+              <span>I want to speak</span>
 
-              <select defaultValue={ userData.targetLanguage || config.defaultLang }
-                      onChange={ e => User.saveTargetLanguage(e.target.value) }>
+              <select defaultValue={ userData.language || config.defaultLang }
+                      onChange={ e => User.saveLanguage(e.target.value) }>
                 { langOptions }
               </select>
             </h2>
@@ -52,11 +56,11 @@ export default ({ match }) => {
 
           <div className={ styles.column }>
             <h2>
-              <span>I speak</span>
+              <span>My level is</span>
 
-              <select defaultValue={ userData.nativeLanguage || config.defaultLang }
-                      onChange={ e => User.saveNativeLanguage(e.target.value) }>
-                { langOptions }
+              <select defaultValue={ userData.level || config.levels[0] }
+                      onChange={ e => User.saveLevel(e.target.value) }>
+                { levelOptions }
               </select>
             </h2>
           </div>
@@ -68,9 +72,9 @@ export default ({ match }) => {
           <h3>Join a video chat as a</h3>
 
           <div className={ styles.cta }>
-            <Link to="/lobby" onClick={ () => User.saveStudent(true) }>Student</Link>
+            <Link to="/lobby" onClick={ () => User.saveTeacher(false) }>Student</Link>
             <i>or</i>
-            <Link to="/lobby" onClick={ () => User.saveStudent(false) }>Teacher</Link>
+            <Link to="/lobby" onClick={ () => User.saveTeacher(true) }>Teacher</Link>
           </div>
         </div>
       </section>

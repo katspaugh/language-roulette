@@ -34,7 +34,7 @@ export default class Lobby extends PureComponent {
 
   isMatchingRoom(roomName) {
     const desiredRoom = [
-      this.userData.student ? 'teacher' : 'student',
+      this.userData.teacher ? 'student' : 'teacher',
       this.lang,
       ''
     ].join('-');
@@ -114,10 +114,10 @@ export default class Lobby extends PureComponent {
 
     this.userData = User.getUserData();
 
-    this.lang = this.userData.student ? this.userData.targetLanguage : this.userData.nativeLanguage;
+    this.lang = this.userData.language;
 
     this.ownRoomName = [
-      this.userData.student ? 'student' : 'teacher',
+      this.userData.teacher ? 'teacher' : 'student',
       this.lang,
       this.userData.id
     ].join('-');
@@ -150,9 +150,9 @@ export default class Lobby extends PureComponent {
     return (
       <div className={ styles.container }>
         <h1>
-          { this.userData.student ?
-            `Learning ${ config.languages[this.userData.targetLanguage] }` :
-            `Teaching ${ config.languages[this.userData.nativeLanguage] }`
+          { this.userData.teacher ?
+            `Teaching ${ config.languages[this.lang] }` :
+            `Learning ${ config.languages[this.lang] }`
           }
 
           <Timer />
