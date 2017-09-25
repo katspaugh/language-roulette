@@ -107,7 +107,7 @@ export default class Lobby extends PureComponent {
 
   componentWillMount() {
     // Check for WebRTC
-    if (navigator.getUserMedia && !navigator.webkitGetUserMedia && !navigator.mozGetUserMedia) {
+    if (!navigator.getUserMedia && !navigator.webkitGetUserMedia && !navigator.mozGetUserMedia) {
       alert('WebRTC is not available in your browser.');
       return;
     }

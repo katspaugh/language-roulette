@@ -75,6 +75,9 @@
   width: 100%;
   display: flex;
   flex-direction: row;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
 }
 
 .front section h3 {
@@ -85,13 +88,16 @@
 
 .front section h2 span {
   white-space: nowrap;
+  vertical-align: middle;
 }
 
 .front section h2 select {
   vertical-align: middle;
   font-size: 0.9em;
   margin-left: 0.5em;
-  min-width: 6em;
+  min-width: 5em;
+  max-width: 7em;
+  overflow: hidden;
 }
 
 .cta {
