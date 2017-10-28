@@ -24,6 +24,7 @@
     "@types/react-dom": "*",
     "@types/react-router": "*",
     "@types/react-router-dom": "*",
+    "@types/redux": "^3.6.0",
     "@types/rx-lite": "*",
     "@types/webaudioapi": "*",
     "@types/webspeechapi": "*",
@@ -47,6 +48,7 @@
     "aws-iot-device-sdk": "^2.0.1",
     "classnames": "*",
     "react-router-dom": "*",
+    "redux": "^3.7.2",
     "rx": "*",
     "twilio-video": "*"
   }

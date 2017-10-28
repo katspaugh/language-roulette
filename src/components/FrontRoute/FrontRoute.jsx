@@ -1,16 +1,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
-import User from '../../services/User';
+import UserStore from '../../services/UserStore';
+import UserApi from '../../services/UserApi';
 import config from '../../config';
-import YoutubeList from '../YoutubeList/YoutubeList.jsx';
 import styles from './FrontRoute.css';
+
+const formValues = {};
+
+const submit = () => {
+  UserStore.dispatch({ type: 'update', data: formValues });
+
+  const userData = UserStore.getState();
+  if (userData.userId) {
+    UserApi.updateUserData(userData.userId, userData.userAccessToken, userData);
+  }
+};
 
 /**
  * FrontRoute component
  */
 export default ({ match }) => {
-  const userData = User.getUserData();
+  const userData = UserStore.getState();
 
   const otherLanguages = Object.keys(config.languages)
     .filter(key => !(key in config.popularLanguages));
@@ -29,7 +40,7 @@ export default ({ match }) => {
 
   return (
     <div className={ styles.front }>
-      <section className={ styles.hilite }>
+      <section>
         <div className={ styles.container }>
           <h1>
             Language
@@ -48,7 +59,7 @@ export default ({ match }) => {
               <span>I want to speak</span>
 
               <select defaultValue={ userData.language || config.defaultLang }
-                      onChange={ e => User.saveLanguage(e.target.value) }>
+                      onChange={ e => formValues.language = e.target.value }>
                 { langOptions }
               </select>
             </h2>
@@ -59,7 +70,7 @@ export default ({ match }) => {
               <span>My level is</span>
 
               <select defaultValue={ userData.level || config.levels[0] }
-                      onChange={ e => User.saveLevel(e.target.value) }>
+                      onChange={ e => formValues.level = e.target.value }>
                 { levelOptions }
               </select>
             </h2>
@@ -72,9 +83,15 @@ export default ({ match }) => {
           <h3>Join a video chat as a</h3>
 
           <div className={ styles.cta }>
-            <Link to="/lobby" onClick={ () => User.saveTeacher(false) }>Student</Link>
+            <Link to="/lobby" onClick={ () => {
+                formValues.teacher = false;
+                submit();
+            } }>Student</Link>
             <i>or</i>
-            <Link to="/lobby" onClick={ () => User.saveTeacher(true) }>Teacher</Link>
+            <Link to="/lobby" onClick={ () => {
+                formValues.teacher = true;
+                submit();
+            } }>Teacher</Link>
           </div>
         </div>
       </section>

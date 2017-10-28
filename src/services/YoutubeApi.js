@@ -15,7 +15,8 @@ const channels = {
   de: [
     'UCbxb2fqe9oNgglAoYqsYOtQ', // Easy German
     'UCySxeQ0avHLwZhys1J4J7Zw', // Die Klugscheisserwissen
-    'UCwRH985XgMYXQ6NxXDo8npw' // Kurzgesagt DE
+    'UCwRH985XgMYXQ6NxXDo8npw', // Kurzgesagt DE
+    'UC5E9-r42JlymhLPnDv2wHuA', // Terra X Lesch & Co
   ]
 };
 

@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react';
-import User from '../../services/User';
+import UserStore from '../../services/UserStore';
 import PubSub from '../../services/PubSub';
 import VideoCallApi from '../../services/VideoCallApi';
 import VideoChat from '../VideoChat/VideoChat.jsx';
@@ -112,14 +112,14 @@ export default class Lobby extends PureComponent {
       return;
     }
 
-    this.userData = User.getUserData();
+    this.userData = UserStore.getState();
 
     this.lang = this.userData.language;
 
     this.ownRoomName = [
       this.userData.teacher ? 'teacher' : 'student',
       this.lang,
-      this.userData.id
+      this.userData.userId
     ].join('-');
 
     this.pubSub = new PubSub(this.lang);

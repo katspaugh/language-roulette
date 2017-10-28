@@ -6,6 +6,7 @@ import Footer from '../Footer/Footer.jsx';
 import FrontRoute from '../FrontRoute/FrontRoute.jsx';
 import Lobby from '../Lobby/Lobby.jsx';
 import Call from '../Call/Call.jsx';
+import Dashboard from '../Dashboard/Dashboard.jsx';
 import styles from './Router.css';
 
 const Routes = () => (
@@ -18,6 +19,8 @@ const Routes = () => (
       <Route exact path="/lobby" component={ Lobby } />
 
       <Route exact path="/call/:id" component={ Call } />
+
+      <Route exact path="/dashboard" component={ Dashboard } />
 
       <Footer />
     </div>

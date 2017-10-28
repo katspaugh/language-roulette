@@ -1,31 +1,31 @@
 import React from 'react';
-import User from '../../services/User';
+import { Link } from 'react-router-dom';
+import UserApi from '../../services/UserApi';
+import UserStore from '../../services/UserStore';
 import styles from './Login.css';
 
 export default class Login extends React.PureComponent {
   constructor() {
     super();
 
-    this.state = { email: '', userData: null };
+    this.state = { email: '' };
 
     this._onSubmit = this.onSubmit.bind(this);
   }
 
   onLogin(data) {
     this.setState({
-      email: data.email,
-      userData: data
+      email: data.email
     });
   }
 
   // login callback
   loginCallback(response) {
     if (response.status === 'PARTIALLY_AUTHENTICATED') {
-      User.requestLoginToken(response.code, response.state)
+      UserApi.requestLoginToken(response.code, response.state)
         .then(data => {
-          User.saveEmail(data.email);
-          User.saveExpiresAt(data.expiresAt);
           this.onLogin(data);
+          UserStore.dispatch({ type: 'login', data });
         });
     }
     else if (response.status === 'NOT_AUTHENTICATED') {
@@ -47,7 +47,7 @@ export default class Login extends React.PureComponent {
   }
 
   componentDidMount() {
-    User.requestLoginAppId().then(data => {
+    UserApi.requestLoginAppId().then(data => {
       if (window.AccountKit && window.AccountKit.init) {
         AccountKit.init(data);
       } else {
@@ -57,7 +57,7 @@ export default class Login extends React.PureComponent {
       }
     });
 
-    const savedUser = User.getUserData();
+    const savedUser = UserStore.getState();
     if (savedUser) {
       if (savedUser.expiresAt > Date.now()) {
         this.onLogin(savedUser);
@@ -68,9 +68,11 @@ export default class Login extends React.PureComponent {
   }
 
   render() {
-    return this.state.userData ? (
+    return this.state.email ? (
       <div className={ styles.container }>
-        { this.state.email }
+        <Link to="/dashboard">
+          { this.state.email }
+        </Link>
       </div>
     ) : (
       <div className={ styles.container }>

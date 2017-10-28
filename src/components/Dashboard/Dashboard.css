@@ -1,0 +1,45 @@
+.container {
+  margin: 0 auto;
+  padding: 0 1em;
+  max-width: 900px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.col {
+  flex: 1;
+}
+
+h1 {
+  margin: 50px auto;
+}
+
+.field {
+  margin-bottom: 20px;
+}
+
+button {
+  color: #333;
+  border: 1px solid #FFF844;
+  border-radius: 4px;
+  background: #FFF;
+  padding: 0.5em 1.5em;
+  margin: 20px 0;
+  cursor: pointer;
+  font-size: 16px;
+  outline: none;
+  text-decoration: none;
+}
+
+button:hover {
+  color: #000;
+  border-color: #999;
+  text-decoration: none;
+}
+
+button:active {
+  border-color: #999;
+}
