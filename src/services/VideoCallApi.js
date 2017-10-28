@@ -1,6 +1,6 @@
 import config from '../config';
 
-const { videoApiUrl } = config;
+const { videoApiUrl, userApiUrl } = config;
 
 export default class VideoApi {
   static requestToken() {
@@ -26,7 +26,8 @@ export default class VideoApi {
       body: JSON.stringify({
         uniqueName,
         maxParticipants,
-        enableTurn: true
+        enableTurn: true,
+        statusCallback: `${ userApiUrl }/update-video-status`
       })
     }))
       .then(resp => resp.json());

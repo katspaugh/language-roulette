@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import AccountKit from '../../services/AccountKit';
 import UserApi from '../../services/UserApi';
 import UserStore from '../../services/UserStore';
 import styles from './Login.css';
@@ -9,58 +10,59 @@ export default class Login extends React.PureComponent {
     super();
 
     this.unsubscribe = null;
-    this.emailAddress = '';
 
     this.state = {
       displayedName: ''
     };
   }
 
-  // login callback
-  loginCallback(response) {
-    if (response.status === 'PARTIALLY_AUTHENTICATED') {
-      UserApi.requestLoginToken(response.code, response.state)
-        .then(data => UserStore.dispatch({ type: 'login', data }));
-    }
-    else if (response.status === 'NOT_AUTHENTICATED') {
-      // handle authentication failure
-    }
-    else if (response.status === 'BAD_PARAMS') {
-      // handle bad parameters
-    }
+  updateDisplay(displayedName) {
+    this.setState({ displayedName });
   }
 
-  onClick() {
-    window.AccountKit.login(
-      'EMAIL',
-      { emailAddress: this.emailAddress },
-      resp => this.loginCallback(resp)
-    );
+  updateStore(data) {
+    UserStore.dispatch({ type: 'login', data });
   }
 
-  updateState() {
-    const { email, expiresAt } = UserStore.getState();
+  clearStore() {
+    UserStore.dispatch({ type: 'expire' });
+  }
 
-    this.emailAddress = email || '';
+  onStoreUpdate() {
+    const state = UserStore.getState();
 
-    this.setState({
-      displayedName: (email && expiresAt > Date.now()) ? email : ''
-    });
+    if (state.loginNeeded && AccountKit.initialized) {
+      this.openLogin();
+    }
+
+    this.updateDisplay(state.userId ? state.email : '');
+  }
+
+  openLogin() {
+    AccountKit.openLogin(UserStore.getState().email)
+      .then(data => this.updateStore(data));
   }
 
   componentWillMount() {
-    UserApi.requestLoginAppId().then(data => {
-      if (window.AccountKit && window.AccountKit.init) {
-        AccountKit.init(data);
-      } else {
-        window.AccountKit_OnInteractive = () => {
-          window.AccountKit.init(data);
-        };
+    this.unsubscribe = UserStore.subscribe(() => this.onStoreUpdate());
+
+    const { userId, userAccessToken, expiresAt, email } = UserStore.getState();
+
+    if (userId && userAccessToken && expiresAt > Date.now()) {
+      this.updateDisplay(email);
+
+      UserApi.getUserData(userId, userAccessToken)
+        .then(data => this.updateStore(data))
+        .catch(() => this.clearStore());
+    } else {
+      this.clearStore();
+    }
+
+    AccountKit.init().then(() => {
+      if (UserStore.getState().loginNeeded) {
+        this.openLogin();
       }
     });
-
-    this.unsubscribe = UserStore.subscribe(() => this.updateState());
-    this.updateState();
   }
 
   componentWillUnmount() {
@@ -76,7 +78,7 @@ export default class Login extends React.PureComponent {
       </div>
     ) : (
       <div className={ styles.container }>
-        <button onClick={ () => this.onClick() }>Login via email</button>
+        <button onClick={ () => this.openLogin() }>Login via email</button>
         { ' ' }
       </div>
     );

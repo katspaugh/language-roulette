@@ -5,22 +5,43 @@ const getSavedState = () => {
 };
 
 const saveState = () => {
-  const state = store.getState();
-  localStorage.setItem('user', JSON.stringify(state));
+  localStorage.setItem('user', JSON.stringify(store.getState()));
 };
 
 const userReducer = (state = {}, action) => {
+  let newState = Object.assign({}, state);
+
   switch (action.type) {
+      case 'loginNeeded':
+        newState.loginNeeded = !state.userId;
+        break;
+
       case 'login':
-        return Object.assign({}, state, action.data);
+        Object.assign(newState, action.data);
+        break;
 
       case 'logout':
-        return {};
+        newState = {};
+        break;
+
+      case 'expire':
+        Object.assign(newState, { userId: null, userAccessToken: null, expiresAt: null });
+        break;
 
       case 'update':
-        return Object.assign({}, state, action.data);
+        Object.assign(newState, action.data);
+        break;
   }
-  return state;
+
+  if (newState.points == null) {
+    newState.points = 50;
+  }
+
+  if (newState.userId) {
+    newState.loginNeeded = false;
+  }
+
+  return newState;
 };
 
 const store = createStore(

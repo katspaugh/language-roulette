@@ -7,9 +7,8 @@ const key = 'QUl6YVN5RGRtQXpXQ2pvZ01vMTRqbjE4NXdfNVFDTUl4b0xidGUw';
 
 const channels = {
   en: [
-    'voxdotcom',
-    'Kurzgesagt',
-    'TEDtalksDirector'
+    'UCLXo7UDZvByw2ixzpQCufnA', // 'voxdotcom'
+    'UCsXVk37bltHxD1rDPwtNM8Q', //'Kurzgesagt'
   ],
 
   de: [
@@ -21,7 +20,7 @@ const channels = {
 };
 
 export default class YoutubeApi {
-  static search(languageCode = 'en', channelId = '') {
+  static search(languageCode, channelId) {
     const params = {
       part: 'snippet',
       maxResults: 20,
@@ -29,7 +28,6 @@ export default class YoutubeApi {
       type: 'video',
       videoEmbeddable: 'true',
       key: atob(key),
-      regionCode: languageCode.toUpperCase(), // TODO
       relevanceLanguage: languageCode
     };
 
@@ -64,7 +62,7 @@ export default class YoutubeApi {
   }
 
   static searchRandom(languageCode = 'en') {
-    const channelId = channels[languageCode] ? randomItem(channels[languageCode]) : '';
+    const channelId = channels[languageCode] ? randomItem(channels[languageCode]) : undefined;
     return YoutubeApi.search(languageCode, channelId)
       .then(data => randomItem(data.items));
   }

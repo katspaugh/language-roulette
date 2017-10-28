@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Login from '../Login/Login.jsx';
+import Points from '../Points/Points.jsx';
 import styles from './Nav.css';
 
 export default class Nav extends React.PureComponent {
@@ -12,7 +13,9 @@ export default class Nav extends React.PureComponent {
             <Link to="/">Language Roulette</Link>
           </div>
 
-          <div className={ styles.info } />
+          <div className={ styles.info }>
+            <Points />
+          </div>
 
           <div className={ styles.login }>
             <Login />

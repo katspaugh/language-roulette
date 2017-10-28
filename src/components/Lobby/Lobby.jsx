@@ -16,8 +16,8 @@ export default class Lobby extends PureComponent {
   constructor() {
     super();
 
-    this.userData = null;
-    this.lang = null;
+    this.userData = UserStore.getState();
+    this.lang = this.userData.language;
     this.ownRoomName = null;
     this.pubSub = null;
     this.isWaiting = true;
@@ -32,9 +32,13 @@ export default class Lobby extends PureComponent {
     this._onDisconnect = () => this.onDisconnect();
   }
 
+  isTeacher() {
+    return this.userData.level === 'native';
+  }
+
   isMatchingRoom(roomName) {
     const desiredRoom = [
-      this.userData.teacher ? 'student' : 'teacher',
+      this.isTeacher() ? 'student' : 'teacher',
       this.lang,
       ''
     ].join('-');
@@ -112,12 +116,8 @@ export default class Lobby extends PureComponent {
       return;
     }
 
-    this.userData = UserStore.getState();
-
-    this.lang = this.userData.language;
-
     this.ownRoomName = [
-      this.userData.teacher ? 'teacher' : 'student',
+      this.isTeacher() ? 'teacher' : 'student',
       this.lang,
       this.userData.userId
     ].join('-');
@@ -150,7 +150,7 @@ export default class Lobby extends PureComponent {
     return (
       <div className={ styles.container }>
         <h1>
-          { this.userData.teacher ?
+          { this.isTeacher() ?
             `Teaching ${ config.languages[this.lang] }` :
             `Learning ${ config.languages[this.lang] }`
           }

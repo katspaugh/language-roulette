@@ -33,8 +33,9 @@ export default class Tabs extends PureComponent {
           <h4>{ this.props.title }:</h4>
 
           { tabNames.map((name, index) => (
-            <div className={ classnames(styles.tab, { [styles.active]: index === activeTab }) }
-                 onClick={ () => this.setTab(index) }>
+            <div
+              className={ classnames(styles.tab, { [styles.active]: index === activeTab }) }
+              onClick={ () => this.setTab(index) }>
               { name }
             </div>
           )) }

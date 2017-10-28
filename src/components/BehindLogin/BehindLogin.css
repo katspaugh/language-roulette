@@ -1,0 +1,46 @@
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.container {
+  min-height: 70vh;
+  padding: 5vh;
+  position: relative;
+}
+
+.center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+  opacity: 0;
+  animation: fade-in 300ms 600ms ease-in;
+  animation-fill-mode: forwards;
+  text-align: center;
+}
+
+.container button {
+  color: #000;
+  border: 1px solid #FFF844;
+  border-radius: 4px;
+  background: #FFF844;
+  padding: 0.5em 1.5em;
+  cursor: pointer;
+  font-size: 32px;
+  margin: 0 30px 1em;
+  outline: none;
+  text-decoration: none;
+}
+
+.container button:hover {
+  color: #000;
+  border-color: #999;
+  background: #fff333;
+  text-decoration: none;
+}
+
+.container button:active {
+  background: #fff71e;
+}
