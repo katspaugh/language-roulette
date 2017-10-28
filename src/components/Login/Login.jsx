@@ -8,25 +8,19 @@ export default class Login extends React.PureComponent {
   constructor() {
     super();
 
-    this.state = { email: '' };
+    this.unsubscribe = null;
+    this.emailAddress = '';
 
-    this._onSubmit = this.onSubmit.bind(this);
-  }
-
-  onLogin(data) {
-    this.setState({
-      email: data.email
-    });
+    this.state = {
+      displayedName: ''
+    };
   }
 
   // login callback
   loginCallback(response) {
     if (response.status === 'PARTIALLY_AUTHENTICATED') {
       UserApi.requestLoginToken(response.code, response.state)
-        .then(data => {
-          this.onLogin(data);
-          UserStore.dispatch({ type: 'login', data });
-        });
+        .then(data => UserStore.dispatch({ type: 'login', data }));
     }
     else if (response.status === 'NOT_AUTHENTICATED') {
       // handle authentication failure
@@ -36,17 +30,25 @@ export default class Login extends React.PureComponent {
     }
   }
 
-  onSubmit(e) {
-    e.preventDefault();
-
+  onClick() {
     window.AccountKit.login(
       'EMAIL',
-      { emailAddress: this.state.email },
-      this.loginCallback.bind(this)
+      { emailAddress: this.emailAddress },
+      resp => this.loginCallback(resp)
     );
   }
 
-  componentDidMount() {
+  updateState() {
+    const { email, expiresAt } = UserStore.getState();
+
+    this.emailAddress = email || '';
+
+    this.setState({
+      displayedName: (email && expiresAt > Date.now()) ? email : ''
+    });
+  }
+
+  componentWillMount() {
     UserApi.requestLoginAppId().then(data => {
       if (window.AccountKit && window.AccountKit.init) {
         AccountKit.init(data);
@@ -57,26 +59,24 @@ export default class Login extends React.PureComponent {
       }
     });
 
-    const savedUser = UserStore.getState();
-    if (savedUser) {
-      if (savedUser.expiresAt > Date.now()) {
-        this.onLogin(savedUser);
-      } else {
-        this.setState({ email: savedUser.email });
-      }
-    }
+    this.unsubscribe = UserStore.subscribe(() => this.updateState());
+    this.updateState();
+  }
+
+  componentWillUnmount() {
+    this.unsubscribe && this.unsubscribe();
   }
 
   render() {
-    return this.state.email ? (
+    return this.state.displayedName ? (
       <div className={ styles.container }>
         <Link to="/dashboard">
-          { this.state.email }
+          { this.state.displayedName }
         </Link>
       </div>
     ) : (
       <div className={ styles.container }>
-        <button onClick={ this._onSubmit }>Login via email</button>
+        <button onClick={ () => this.onClick() }>Login via email</button>
         { ' ' }
       </div>
     );

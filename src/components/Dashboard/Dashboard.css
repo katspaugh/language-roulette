@@ -21,7 +21,8 @@ h1 {
   margin-bottom: 20px;
 }
 
-button {
+.cta {
+  display: inline-block;
   color: #333;
   border: 1px solid #FFF844;
   border-radius: 4px;
@@ -34,12 +35,12 @@ button {
   text-decoration: none;
 }
 
-button:hover {
+.cta:hover {
   color: #000;
   border-color: #999;
   text-decoration: none;
 }
 
-button:active {
+.cta:active {
   border-color: #999;
 }

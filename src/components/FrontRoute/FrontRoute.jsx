@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PureComponent } from 'react';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 import UserStore from '../../services/UserStore';
@@ -20,81 +20,113 @@ const submit = () => {
 /**
  * FrontRoute component
  */
-export default ({ match }) => {
-  const userData = UserStore.getState();
+export default class FrontRoute extends PureComponent {
+  constructor() {
+    super();
 
-  const otherLanguages = Object.keys(config.languages)
-    .filter(key => !(key in config.popularLanguages));
+    this.unsubscribe = null;
 
-  const langOptions = Object.keys(config.popularLanguages).map(lang => (
-    <option key={ lang } value={ lang }>{ config.languages[lang] }</option>
-  )).concat([ (
-    <option disabled>───────</option>
-  ) ]).concat(otherLanguages.map(lang => (
-    <option key={ lang } value={ lang }>{ config.languages[lang] }</option>
-  )));
+    this.state = {
+      language: '',
+      level: '',
+      teacher: null
+    };
+  }
 
-  const levelOptions = config.levels.map(item => (
-    <option key={ item.level } value={ item.level }>{ item.title }</option>
-  ));
+  setValue(data) {
+    UserStore.dispatch({ type: 'update', data });
+  }
 
-  return (
-    <div className={ styles.front }>
-      <section>
-        <div className={ styles.container }>
-          <h1>
-            Language
-            <span>
-              <img src="/images/spin.png" className={ styles.spinningImage } />
-              <img src="/images/pointer.png" className={ styles.pointerImage } />
-            </span>
-            Roulette</h1>
-        </div>
-      </section>
+  updateState() {
+    const { language, level, teacher } = UserStore.getState();
+    this.setState({ language, level, teacher });
+  }
 
-      <section>
-        <div className={ classnames(styles.container, styles.row) }>
-          <div className={ styles.column }>
-            <h2>
-              <span>I want to speak</span>
+  componentWillMount() {
+    this.unsubscribe = UserStore.subscribe(() => this.updateState());
+    this.updateState();
+  }
 
-              <select defaultValue={ userData.language || config.defaultLang }
-                      onChange={ e => formValues.language = e.target.value }>
-                { langOptions }
-              </select>
-            </h2>
+  componentWillUnmount() {
+    this.unsubscribe && this.unsubscribe();
+  }
+
+  render() {
+    const { language, level, teacher } = this.state;
+
+    const otherLanguages = Object.keys(config.languages)
+      .filter(key => !(key in config.popularLanguages));
+
+    const langOptions = Object.keys(config.popularLanguages).map(lang => (
+      <option key={ lang } value={ lang }>{ config.languages[lang] }</option>
+    )).concat([ (
+      <option disabled>───────</option>
+    ) ]).concat(otherLanguages.map(lang => (
+      <option key={ lang } value={ lang }>{ config.languages[lang] }</option>
+    )));
+
+    const levelOptions = config.levels.map(item => (
+      <option key={ item.level } value={ item.level }>{ item.title }</option>
+    ));
+
+    return (
+      <div className={ styles.front }>
+        <section>
+          <div className={ styles.container }>
+            <h1>
+              Language
+              <span>
+                <img src="/images/spin.png" className={ styles.spinningImage } />
+                <img src="/images/pointer.png" className={ styles.pointerImage } />
+              </span>
+              Roulette</h1>
           </div>
+        </section>
 
-          <div className={ styles.column }>
-            <h2>
-              <span>My level is</span>
+        <section>
+          <div className={ classnames(styles.container, styles.row) }>
+            <div className={ styles.column }>
+              <h2>
+                <span>I want to speak</span>
 
-              <select defaultValue={ userData.level || config.levels[0] }
-                      onChange={ e => formValues.level = e.target.value }>
-                { levelOptions }
-              </select>
-            </h2>
+                <select value={ language || config.defaultLang }
+                        onChange={ e => this.setValue({ language: e.target.value }) }>
+                  { langOptions }
+                </select>
+              </h2>
+            </div>
+
+            <div className={ styles.column }>
+              <h2>
+                <span>My level is</span>
+
+                <select value={ level || config.levels[0] }
+                        onChange={ e => this.setValue({ level: e.target.value }) }>
+                  { levelOptions }
+                </select>
+              </h2>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section>
-        <div className={ styles.container }>
-          <h3>Join a video chat as a</h3>
+        <section>
+          <div className={ styles.container }>
+            <h3>Join a video chat as a</h3>
 
-          <div className={ styles.cta }>
-            <Link to="/lobby" onClick={ () => {
-                formValues.teacher = false;
-                submit();
-            } }>Student</Link>
-            <i>or</i>
-            <Link to="/lobby" onClick={ () => {
-                formValues.teacher = true;
-                submit();
-            } }>Teacher</Link>
+            <div className={ styles.cta }>
+              <Link to="/lobby" onClick={ () => {
+                  this.setValue({ teacher: false });
+                  submit();
+                } }>Student</Link>
+              <i>or</i>
+              <Link to="/lobby" onClick={ () => {
+                  this.setValue({ teacher: true });
+                  submit();
+                } }>Teacher</Link>
+            </div>
           </div>
-        </div>
-      </section>
-    </div>
-  );
+        </section>
+      </div>
+    );
+  }
 }

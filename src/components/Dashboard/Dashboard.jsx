@@ -1,4 +1,5 @@
 import React, { PureComponent } from 'react';
+import { Link } from 'react-router-dom';
 import UserStore from '../../services/UserStore';
 import config from '../../config';
 import styles from './Dashboard.css';
@@ -63,7 +64,7 @@ export default class Dashboard extends PureComponent {
             </div>
 
             <div className={ styles.field }>
-              <button onClick={ () => this.logout() }>Log out</button>
+              <Link to="/" className={ styles.cta } onClick={ () => this.logout() }>Log out</Link>
             </div>
           </div>
 
